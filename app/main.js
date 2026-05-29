@@ -1,2 +1,2 @@
 import './core/app.module.js';
-import './core/app.route.js';
+//import './core/app.route.js';
