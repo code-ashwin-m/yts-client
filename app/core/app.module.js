@@ -1,6 +1,1 @@
-
-alert("before");
-
-var app = angular.module("YTS");
-
-alert("hai");
+var app = angular.module("YTS", ["ngRoute"]);

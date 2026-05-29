@@ -1,0 +1,9 @@
+<div ng-controller="BrowseMovieController">
+    <h2>Browse Movies</h2>
+
+    <div ng-repeat="movie in movies">
+        <a href="#!movie?id={{movie.id}}">
+            {{movie.title}}
+        </a>
+    </div>
+</div>
