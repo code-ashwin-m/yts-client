@@ -10,4 +10,5 @@ angular.module("YTS").controller("BrowseMovieController", function ($scope, $loc
     };
 
     $scope.loadMovies();
+
 });

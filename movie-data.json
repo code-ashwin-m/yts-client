@@ -1,0 +1,62 @@
+{
+  "status": "ok",
+  "status_message": "Query was successful",
+  "data": {
+    "movie": {
+      "id": 53669,
+      "url": "https://yts.bz/movies/street-dancer-3d-2020",
+      "imdb_code": "tt9648672",
+      "title": "Street Dancer 3D",
+      "title_english": "Street Dancer 3D",
+      "title_long": "Street Dancer 3D (2020)",
+      "slug": "street-dancer-3d-2020",
+      "year": 2020,
+      "rating": 3.8,
+      "runtime": 146,
+      "genres": [
+        "Action",
+        "Drama",
+        "Music"
+      ],
+      "like_count": 2,
+      "description_intro": "Two rival dance groups from India and Pakistan who are always competing against each other, join forces when it comes to competing at an international dance competition.",
+      "description_full": "Two rival dance groups from India and Pakistan who are always competing against each other, join forces when it comes to competing at an international dance competition.",
+      "yt_trailer_code": "",
+      "language": "hi",
+      "mpa_rating": "Not Rated",
+      "background_image": "https://yts.bz/assets/images/movies/street_dancer_3d_2020/background.jpg",
+      "background_image_original": "https://yts.bz/assets/images/movies/street_dancer_3d_2020/background.jpg",
+      "small_cover_image": "https://yts.bz/assets/images/movies/street_dancer_3d_2020/small-cover.jpg",
+      "medium_cover_image": "https://yts.bz/assets/images/movies/street_dancer_3d_2020/medium-cover.jpg",
+      "large_cover_image": "https://yts.bz/assets/images/movies/street_dancer_3d_2020/large-cover.jpg",
+      "medium_screenshot_image1": "https://yts.bz/assets/images/movies/street_dancer_3d_2020/medium-screenshot1.jpg",
+      "medium_screenshot_image2": "https://yts.bz/assets/images/movies/street_dancer_3d_2020/medium-screenshot2.jpg",
+      "medium_screenshot_image3": "https://yts.bz/assets/images/movies/street_dancer_3d_2020/medium-screenshot3.jpg",
+      "large_screenshot_image1": "https://yts.bz/assets/images/movies/street_dancer_3d_2020/large-screenshot1.jpg",
+      "large_screenshot_image2": "https://yts.bz/assets/images/movies/street_dancer_3d_2020/large-screenshot2.jpg",
+      "large_screenshot_image3": "https://yts.bz/assets/images/movies/street_dancer_3d_2020/large-screenshot3.jpg",
+      "torrents": [
+        {
+          "url": "https://yts.bz/torrent/download/2E7113F8C4331B1D56EA36A525EDA9A878EC7C5F",
+          "hash": "2E7113F8C4331B1D56EA36A525EDA9A878EC7C5F",
+          "quality": "3D",
+          "type": "web",
+          "is_repack": "0",
+          "video_codec": "x264",
+          "bit_depth": "8",
+          "audio_channels": "5.1",
+          "seeds": 0,
+          "peers": 0,
+          "size": "2.61 GB",
+          "size_bytes": 2802466161,
+          "date_uploaded": "2023-08-03 21:24:25",
+          "date_uploaded_unix": 1691090665
+        }
+      ]
+    }
+  },
+  "@meta": {
+    "api_version": 2,
+    "execution_time": "0 ms"
+  }
+}
