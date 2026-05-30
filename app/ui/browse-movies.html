@@ -1,9 +1,14 @@
 <div ng-controller="BrowseMovieController">
     <h2>Browse Movies</h2>
 
-    <div ng-repeat="movie in movies">
-        <a href="#!movie?id={{movie.id}}">
-            {{movie.title}}
-        </a>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div ng-repeat="movie in movies">
+            <a href="#!movie?id={{movie.id}}">
+                <div>
+                    <div><img src="{{movie.medium_cover_image}}"></div>
+                    {{movie.title}}
+                </div>
+            </a>
+        </div>
     </div>
 </div>

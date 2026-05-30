@@ -2,7 +2,7 @@ angular.module("YTS").controller("BrowseMovieController", function ($scope, $loc
     $scope.movies = [];
 
     $scope.loadMovies = function() {
-        ApiService.list()
+        ApiService.mock_list()
         .then(function (response) {
             $scope.movies = response.data.movies;
         })

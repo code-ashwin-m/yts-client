@@ -27,4 +27,16 @@ angular.module("YTS").service("ApiService", function($http, $q) {
         .then(handleResponse)
         .catch(handleError);
     }
+
+    this.mock_list = function (){
+        return $http.get("app/data/list-data.json")
+        .then(handleResponse)
+        .catch(handleError);
+    };
+
+    this.mock_movie = function (id) {
+        return $http.get(`app/data/movie-data.json`)
+        .then(handleResponse)
+        .catch(handleError);
+    }
 });

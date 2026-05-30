@@ -1,11 +1,18 @@
 <div ng-controller="MovieController">
     <h2>Movie</h2>
 
-    <h2>{{movie.title}}</h2>
+    <h2>{{movie.title_long}}</h2>
 
-    <img src="{{movie.medium_cover_image}}">
+    <div>
+        <span ng-repeat="genre in movie.genres">{{genre}}</span>
+    </div>
 
-    <br/>
+    <div>
+        <img src="{{movie.medium_cover_image}}">
+    </div>
 
-    <a href="{{magnetURL()}}">magnet</a>
+    <div ng-repeat="torrent in movie.torrents" >
+        <a href="{{magnetURL(torrent)}}">{{torrentLabel(torrent)}}</a>
+    </div>
+    
 </div>
