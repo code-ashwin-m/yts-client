@@ -1,8 +1,11 @@
-*, *::after, *::before {
+*,
+*::after,
+*::before {
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   padding: 0;
   margin: 0;
 }
@@ -30,18 +33,18 @@ html, body {
   text-decoration: none;
 }
 
-.movie-details {
+.movie-info {
   margin-top: 0.3rem;
 }
-.movie-details .title {
+.movie-info .title {
   color: #fff;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-weight: bold;
 }
-.movie-details .title span {
+.movie-info .title span {
   color: #A0A0A0;
 }
-.movie-details .year {
+.movie-info .year {
   color: #808080;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-weight: bold;
@@ -109,4 +112,149 @@ html, body {
   color: #fff;
   border: #333 solid 1px;
   padding: 0.5rem 0.7rem;
+}
+
+.movie-details {
+  margin-top: 1rem;
+  background-color: #222;
+  padding: 1rem 0;
+}
+.movie-details .section-main {
+  display: flex;
+  flex-direction: row;
+}
+.movie-details .section-main .poster {
+  flex: 3;
+  padding: 0 0.5rem;
+}
+.movie-details .section-main .poster img {
+  display: block;
+  width: 100%;
+  border: #fff solid 0.3rem;
+  border-radius: 0.5rem;
+}
+.movie-details .section-main .info {
+  flex: 5;
+}
+.movie-details .section-main .info .title {
+  color: #fff;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+.movie-details .section-main .info .year {
+  display: block;
+  color: #fff;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 1rem;
+  margin-top: 0.3rem;
+}
+.movie-details .section-main .info .genres {
+  display: flex;
+  gap: 0.2rem;
+  justify-content: start;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+.movie-details .section-main .info .genres span {
+  background-color: #222;
+  color: #fff;
+  padding: 0.3rem;
+  font-size: 0.6rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  border: #555 solid 1px;
+  border-radius: 0.2rem;
+}
+.movie-details .section-main .info .stats > .row {
+  display: flex;
+  flex-direction: row;
+  padding: 0.3rem 0;
+}
+.movie-details .section-main .info .stats .icon {
+  flex: 1;
+  color: green;
+}
+.movie-details .section-main .info .stats .icon img {
+  height: 0.9rem;
+}
+.movie-details .section-main .info .stats .data {
+  flex: 3;
+  color: #fff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+.movie-details .section-main .info .torrents {
+  display: flex;
+  gap: 0.2rem;
+  justify-content: start;
+  flex-wrap: wrap;
+  margin-top: 0.3rem;
+}
+.movie-details .section-main .info .torrents > div {
+  background-color: #222;
+  padding: 0.3rem;
+  font-size: 0.6rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  border: #555 solid 1px;
+  border-radius: 0.2rem;
+}
+.movie-details .section-main .info .torrents > div a {
+  text-decoration: none;
+  color: #fff;
+}
+.movie-details .section-main .info .torrents > div i {
+  color: green;
+}
+.movie-details .section-info {
+  display: flex;
+  flex-direction: row;
+  padding: 0 0.3rem;
+  margin-top: 0.5rem;
+}
+.movie-details .section-info .summary {
+  flex: 1;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 0.8rem;
+  color: #555;
+}
+.movie-details .section-info .summary h2 {
+  color: #fff;
+  font-size: 1rem;
+  margin: 0;
+  margin-bottom: 0.2rem;
+}
+.movie-details .section-info .crew {
+  flex: 1;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.movie-details .section-info .crew h2 {
+  color: #fff;
+  font-size: 1rem;
+  margin: 0;
+  margin-bottom: 0.2rem;
+}
+.movie-details .section-info .crew .item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.movie-details .section-info .crew .avatar {
+  flex: 1;
+  padding: 0.4rem;
+}
+.movie-details .section-info .crew .avatar img {
+  width: 80%;
+  border-radius: 50%;
+}
+.movie-details .section-info .crew .name {
+  align-items: center;
+  flex: 4;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 0.7rem;
+  color: #fff;
+}
+.movie-details .section-info .crew .name span {
+  color: #555;
+  font-weight: bold;
 }/*# sourceMappingURL=gui.css.map */

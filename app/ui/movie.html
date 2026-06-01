@@ -1,18 +1,47 @@
-<div ng-controller="MovieController">
-    <h2>Movie</h2>
-
-    <h2>{{movie.title_long}}</h2>
-
-    <div>
-        <span ng-repeat="genre in movie.genres">{{genre}}</span>
+<div ng-controller="MovieController" class="movie-details">
+    <div class="section-main">
+        <div class="poster">
+            <img src="{{movie.medium_cover_image}}">
+        </div>
+        <div class="info">
+            <div class="title">{{movie.title}}</div>
+            <span class="year">{{movie.year}}</span>
+            <div class="genres">
+                <span ng-repeat="genre in movie.genres">{{genre}}</span>
+            </div>
+            <div class="stats">
+                <div class="row">
+                    <div class="icon"><i class="fa-solid fa-heart"></i></div>
+                    <div class="data">{{movie.like_count}}</div>
+                </div>
+                <div class="row">
+                    <div class="icon"><img src="app/icons/logo-imdb.svg"></div>
+                    <div class="data">{{movie.rating}}/10</div>
+                </div>
+            </div>
+            <div class="torrents">
+                <div ng-repeat="torrent in movie.torrents">
+                    <i class="fa-solid fa-download"></i>
+                    <a href="{{magnetURL(torrent)}}">{{torrentLabel(torrent)}}</a>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div>
-        <img src="{{movie.medium_cover_image}}">
+    <div class="section-info">
+        <div class="summary">
+            <h2>Plot Summary</h2>
+            {{movie.description_full}}
+        </div>
+        <div class="crew">
+            <h2>Casts</h2>
+            <div class="item" ng-repeat="crew in movie.cast">
+                <div class="avatar">
+                    <img src="{{crewImage(crew)}}">
+                </div>
+                <div class="name">
+                    <span>{{crew.name}} </span> as {{crew.character_name}}
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div ng-repeat="torrent in movie.torrents" >
-        <a href="{{magnetURL(torrent)}}">{{torrentLabel(torrent)}}</a>
-    </div>
-    
 </div>

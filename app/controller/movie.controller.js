@@ -37,6 +37,15 @@ angular.module("YTS").controller("MovieController", function ($scope, $location,
         return `${torrent.quality}.${torrent.type.toUpperCase()}.${torrent.video_codec.toUpperCase()}`;
     }
 
+    $scope.crewImage = function(crew){
+        
+        let url = crew.url_small_image || "app/icons/default_avatar.webp";
+
+        console.log(url);
+
+        return url;
+    }
+
     let id = $location.search().id || null;
     $scope.load(id);
 });

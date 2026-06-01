@@ -21,7 +21,8 @@ angular.module("YTS").service("ApiService", function($http, $q) {
     this.movie = function (id) {
         const params = {
             movie_id: id,
-            with_images: true
+            with_images: true,
+            with_cast: true
         };
         return $http.get(`${base}/movie_details.json`, { params: params })
         .then(handleResponse)
