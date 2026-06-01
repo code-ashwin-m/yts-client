@@ -12,8 +12,8 @@ angular.module("YTS").service("ApiService", function($http, $q) {
         return $q.reject(err);
     };
 
-    this.list = function (){
-        return $http.get(`${base}/list_movies.json?quality=3D`)
+    this.list = function (params = {}){
+        return $http.get(`${base}/list_movies.json`, { params: params})
         .then(handleResponse)
         .catch(handleError);
     };

@@ -1,14 +1,58 @@
-<div ng-controller="BrowseMovieController">
+<div ng-controller="BrowseMovieController" class="movie-browse">
     <h2>Browse Movies</h2>
 
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-        <div ng-repeat="movie in movies">
-            <a href="#!movie?id={{movie.id}}">
+    <div class="movie-filter">
+        <div class="search">
+            <input type="text" ng-model="searchQuery">
+            <button type="button" ng-click="search()">Search</button>
+        </div>
+        <div class="filter">
+            <div>
                 <div>
-                    <div><img src="{{movie.medium_cover_image}}"></div>
-                    {{movie.title}}
+                    <label>Quality</label>
+                    <select ng-model="quality" ng-options="quality.value as quality.label for quality in qualities">
+                    </select>
+                </div>
+                <div>
+                    <label>Genre</label>
+                     <select ng-model="genre" ng-options="genre.value as genre.label for genre in genres">
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <label>Rating</label>
+                    <select ng-model="rating" ng-options="rating.value as rating.label for rating in ratings">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="movie-grid">
+        <div ng-repeat="movie in movies" class="movie-item">
+            <a href="#!movie?id={{movie.id}}">
+                <div class="movie-card">
+                    <div class="movie-poster">
+                        <img src="{{movie.medium_cover_image}}">
+                    </div>
+                    <div class="movie-details">
+                        <div class="title">
+                            <span ng-if="movie.language">[{{movie.language.toUpperCase()}}]</span>
+                            {{movie.title}}
+                        </div>
+                        <div class="year">
+                            {{movie.year}}
+                        </div>
+                    </div>
                 </div>
             </a>
         </div>
+    </div>
+
+    <div class="pagination">
+        <button type="button" ng-click="firstPage()">First</button>
+        <button type="button" ng-click="prevPage()">Previous</button>
+        <button type="button" ng-click="nextPage()">Next</button>
+        <button type="button" ng-click="lastPage()">Last</button>
     </div>
 </div>

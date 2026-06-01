@@ -13,7 +13,7 @@ angular.module("YTS").controller("MovieController", function ($scope, $location,
     $scope.movie = {};
 
     $scope.load = function(id){
-        ApiService.mock_movie(id)
+        ApiService.movie(id)
         .then(function (response){
             $scope.movie = response.data.movie;
         });
