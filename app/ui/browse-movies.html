@@ -28,11 +28,13 @@
             </div>
         </div>
     </div>
+    <div ng-if="!movies" class="no-movies">No Movies Found</div>
     <div class="movie-grid">
         <div ng-repeat="movie in movies" class="movie-item">
             <a href="#!movie?id={{movie.id}}">
                 <div class="movie-card">
                     <div class="movie-poster">
+                        <span class="rating">{{movie.rating}}</span>
                         <img src="{{movie.medium_cover_image}}">
                     </div>
                     <div class="movie-info">

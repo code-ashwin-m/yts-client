@@ -14,7 +14,12 @@ body {
   width: 100%;
   padding: 20px;
   background-color: #333;
-  position: relative;
+}
+.movie-browse .no-movies {
+  color: #888;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  font-weight: bold;
+  text-align: center;
 }
 
 .movie-grid {
@@ -31,6 +36,24 @@ body {
 }
 .movie-item a {
   text-decoration: none;
+}
+.movie-item .movie-poster {
+  position: relative;
+}
+.movie-item .movie-poster .rating {
+  position: absolute;
+  display: block;
+  background-color: green;
+  color: #fff;
+  font-size: 0.6rem;
+  line-height: 1.2rem;
+  min-width: 1.2rem;
+  width: 1.2rem;
+  text-align: center;
+  border-radius: 50%;
+  border: #fff solid 1px;
+  right: 0.7rem;
+  top: 0.7rem;
 }
 
 .movie-info {
@@ -106,6 +129,7 @@ body {
   background-color: #111;
   text-align: center;
   padding: 1rem 0;
+  margin-top: 1rem;
 }
 .pagination button {
   background-color: #000;
