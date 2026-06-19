@@ -1,7 +1,11 @@
 package com.example.ytsclient.data;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -10,7 +14,10 @@ import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ApiService {
     private final Gson gson = new Gson();
@@ -27,6 +34,22 @@ public class ApiService {
         params.put("with_cast", "true");
         MovieDetailsResponse response = gson.fromJson(get(baseUrl, "/movie_details.json", params), MovieDetailsResponse.class);
         return response != null && response.data != null ? normalizeMovie(response.data.movie) : null;
+    }
+
+    public List<Movie> suggestedMovies(String baseUrl, int movieId) throws Exception {
+        Map<String, String> params = new java.util.HashMap<>();
+        params.put("movie_id", String.valueOf(movieId));
+        String res = get(baseUrl, "/movie_suggestions.json", params);
+        Log.d("ApiService", "suggestedMovies: \n" + res);
+
+        MovieSuggestionResponse response = gson.fromJson(get(baseUrl, "/movie_suggestions.json", params), MovieSuggestionResponse.class);
+
+        if (response == null || response.data == null || response.data.movies == null) {
+            Log.d("ApiService", "suggestedMovies: null");
+            return Collections.emptyList();
+        }
+
+        return response != null && response.data != null ? response.data.movies.stream().map( i -> { i = normalizeMovie(i); return i; }).collect(Collectors.toList()) : null;
     }
 
     private static String get(String baseUrl, String path, Map<String, String> params) throws Exception {
@@ -143,5 +166,14 @@ public class ApiService {
     private static class MovieDetailsData {
         @SerializedName("movie")
         Movie movie;
+    }
+
+    private static class MovieSuggestionResponse {
+        MovieSuggestionData data;
+    }
+
+    private static class MovieSuggestionData {
+        @SerializedName("movies")
+        List<Movie> movies;
     }
 }

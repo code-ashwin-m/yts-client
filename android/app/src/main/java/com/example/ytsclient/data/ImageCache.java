@@ -1,6 +1,7 @@
 package com.example.ytsclient.data;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,9 +12,13 @@ import java.security.MessageDigest;
 import java.util.Locale;
 
 public class ImageCache {
-    private static final long MAX_AGE_MS = 7L * 24L * 60L * 60L * 1000L;
+    private static final long MAX_AGE_MS = 7L * 24L * 60L * 60L * 1000L; // 7 days
+    private static final long ONE_DAY_MS = 24L * 60L * 60L * 1000L;     // 1 day
 
     private final File cacheDir;
+
+    private static final String PREFS_NAME = "image_cache_prefs";
+    private static final String KEY_LAST_CLEANUP = "last_cleanup_time";
 
     public ImageCache(Context context) {
         File root = context.getApplicationContext().getExternalFilesDir(null);
@@ -24,6 +29,8 @@ public class ImageCache {
         if (!cacheDir.exists()) {
             cacheDir.mkdirs();
         }
+
+        triggerDailyCleanupIfNeeded(context.getApplicationContext());
     }
 
     public File getImage(String imageUrl) throws Exception {
@@ -31,7 +38,7 @@ public class ImageCache {
             return null;
         }
         File file = new File(cacheDir, sha256(imageUrl) + extensionFor(imageUrl));
-        if (file.exists() && System.currentTimeMillis() - file.lastModified() <= MAX_AGE_MS) {
+        if (file.exists()) {
             return file;
         }
         download(imageUrl, file);
@@ -83,5 +90,53 @@ public class ImageCache {
         if (lower.contains(".png")) return ".png";
         if (lower.contains(".webp")) return ".webp";
         return ".jpg";
+    }
+
+    /**
+     * Checks if a cleanup operation is due (has been 24 hours since the last one).
+     * If yes, launches the cleanup task on a background thread.
+     */
+    private void triggerDailyCleanupIfNeeded(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        long lastCleanupTime = prefs.getLong(KEY_LAST_CLEANUP, 0L);
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - lastCleanupTime >= ONE_DAY_MS) {
+            // Run on a background thread to avoid blocking the main UI thread during disk I/O
+            new Thread(() -> {
+                try {
+                    performCacheCleanup();
+                    // Save the timestamp on successful cleanup execution
+                    prefs.edit().putLong(KEY_LAST_CLEANUP, System.currentTimeMillis()).apply();
+                } catch (Exception e) {
+                    // Log the error using your application's logging framework
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+    }
+
+    /**
+     * Iterates through cached files and deletes any file that is older than 7 days.
+     */
+    private void performCacheCleanup() {
+        if (cacheDir == null || !cacheDir.exists() || !cacheDir.isDirectory()) {
+            return;
+        }
+
+        File[] files = cacheDir.listFiles();
+        if (files == null) {
+            return;
+        }
+
+        long currentTime = System.currentTimeMillis();
+        for (File file : files) {
+            if (file.isFile()) {
+                long fileAge = currentTime - file.lastModified();
+                if (fileAge > MAX_AGE_MS) {
+                    file.delete();
+                }
+            }
+        }
     }
 }

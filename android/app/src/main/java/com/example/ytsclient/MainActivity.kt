@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,10 +16,13 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,7 +32,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -90,7 +96,6 @@ import com.example.ytsclient.data.Movie
 import com.example.ytsclient.ui.AppTab
 import com.example.ytsclient.ui.MovieUiState
 import com.example.ytsclient.ui.MovieViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -268,7 +273,7 @@ private fun BrowseScreen(state: MovieUiState, viewModel: MovieViewModel) {
                 onOpen = viewModel::openMovie,
                 onNearBottom = viewModel::loadNextPage,
                 onScrollDown = {
-                    if (state.filtersVisible) viewModel::hideFilters else {}
+                    if (state.filtersVisible) viewModel.hideFilters()
                 },
                 viewModel = viewModel
             )
@@ -280,7 +285,8 @@ private fun BrowseScreen(state: MovieUiState, viewModel: MovieViewModel) {
                 onOpen = viewModel::openMovie,
                 onNearBottom = viewModel::loadNextPage,
                 onScrollDown = {
-                    if (state.filtersVisible) viewModel::hideFilters else {}
+                    Log.d("Main", "MovieGrid -> onScrollDown")
+                    if (state.filtersVisible) viewModel.hideFilters()
                 },
                 viewModel = viewModel
             )
@@ -309,6 +315,7 @@ private fun SearchAndFilters(state: MovieUiState, viewModel: MovieViewModel) {
                 Icon(Icons.Filled.Search, contentDescription = "Search")
             }
         }
+
         DropdownSelector("Quality", state.quality, listOf("all", "480p", "720p", "1080p", "1080p.x265", "2160p", "3D"), viewModel::setQuality)
         DropdownSelector("Rating", state.rating, listOf("all", "9", "8", "7", "6", "5", "4", "3", "2", "1"), viewModel::setRating)
         DropdownSelector(
@@ -562,6 +569,7 @@ private fun SettingSlider(label: String, value: Int, min: Int, max: Int, onChang
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun MovieDetailsScreen(
     movie: Movie,
@@ -605,21 +613,34 @@ private fun MovieDetailsScreen(
         }
 
         if (movie.torrents.isNotEmpty()) {
-            Text("Downloads", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-            movie.torrents.forEachIndexed { index, torrent ->
-                OutlinedButton(
-                    onClick = {
-                        scope.launch {
-                            viewModel.magnetUrl(movie, index)?.let { magnet ->
-                                clipboard.setPrimaryClip(ClipData.newPlainText("Magnet URL", magnet))
-                                Toast.makeText(context, "Download URL copied", Toast.LENGTH_SHORT).show()
+            Text(
+                text = "Downloads",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // FlowRow naturally places elements side-by-side and wraps them if they exceed the width
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                movie.torrents.forEachIndexed { index, torrent ->
+                    OutlinedButton(
+                        onClick = {
+                            scope.launch {
+                                viewModel.magnetUrl(movie, index)?.let { magnet ->
+                                    clipboard.setPrimaryClip(ClipData.newPlainText("Magnet URL", magnet))
+                                    Toast.makeText(context, "Download URL copied", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
+                    ) {
+                        Icon(Icons.Filled.Download, contentDescription = "Download")
+                        Spacer(Modifier.width(8.dp))
+                        Text(torrent.label(), maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
-                ) {
-                    Icon(Icons.Filled.Download, contentDescription = "Download")
-                    Spacer(Modifier.width(8.dp))
-                    Text(torrent.label(), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
@@ -641,7 +662,51 @@ private fun MovieDetailsScreen(
                 }
             }
         }
+
+        // Similar movies
+        SimilarMovies(movie, viewModel , onOpen = viewModel::openMovie)
     }
+}
+
+@Composable
+fun SimilarMovies(movie: Movie, viewModel: MovieViewModel, onOpen: (Int) -> Unit) {
+    // 1. Fetch suggestions when the movie ID changes (safe from recomposition loops)
+    LaunchedEffect(key1 = movie.id) {
+        viewModel.getSimilarMovies(movie.id)
+    }
+
+    // 2. Safely collect the StateFlow from the ViewModel
+    val state by viewModel.state.collectAsState()
+    val movies: List<Movie> = state.suggestedMovies;
+
+    if (movies.isNotEmpty()){
+        LazyHorizontalGrid(
+            rows = GridCells.Fixed(1),
+            // 3. IMPORTANT: LazyHorizontalGrid must have a specified height constraint to render correctly!
+            modifier = Modifier.fillMaxWidth().height(320.dp),
+            contentPadding = PaddingValues(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            items(
+                items = movies,
+                key = { it.id }
+            ) { suggestedMovie ->
+                Box(
+                    modifier = Modifier
+                        .width(140.dp)
+                        .fillMaxHeight()
+                ) {
+                    MovieGridCard(
+                        movie = suggestedMovie,
+                        onOpen = onOpen,
+                        viewModel = viewModel
+                    )
+                }
+            }
+        }
+    }
+
 }
 
 @Composable

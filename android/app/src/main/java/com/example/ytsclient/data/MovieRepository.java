@@ -2,6 +2,8 @@ package com.example.ytsclient.data;
 
 import android.content.Context;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -55,6 +57,11 @@ public class MovieRepository {
 
     public Movie movie(int movieId) throws Exception {
         return apiService.movieDetails(settingsStore.get().baseUrl, movieId);
+    }
+
+    @NotNull
+    public List<Movie> suggestedMovies(int movieId) throws Exception {
+        return apiService.suggestedMovies(settingsStore.get().baseUrl, movieId);
     }
 
     public List<Movie> favoriteMovies() throws Exception {

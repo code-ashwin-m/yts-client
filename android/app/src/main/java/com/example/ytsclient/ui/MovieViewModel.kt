@@ -1,6 +1,7 @@
 package com.example.ytsclient.ui
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ytsclient.data.BrowseSettings
@@ -34,11 +35,13 @@ data class MovieUiState(
     val page: Int = 1,
     val totalMovies: Int = 0,
     val canLoadMore: Boolean = true,
-    val filtersVisible: Boolean = true,
+    val filtersVisible: Boolean = false,
     val isLoading: Boolean = false,
     val isLoadingFavorites: Boolean = false,
     val isLoadingDetails: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val suggestedMovies: List<Movie> = emptyList(),
+    val isLoadingSuggestions: Boolean = false,
 )
 
 class MovieViewModel(application: Application) : AndroidViewModel(application) {
@@ -141,7 +144,18 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
                 repository.browse(current.query, current.quality, current.rating, current.genre, page)
             }.onSuccess { result ->
                 _state.update {
-                    val nextMovies = if (reset) result.movies else it.movies + result.movies
+
+//                    val nextMovies = if (reset) result.movies else it.movies + result.movies
+
+                    // SOLUTION 2: Filter out incoming movies whose IDs already exist in the list
+                    val nextMovies = if (reset) {
+                        result.movies
+                    } else {
+                        val existingIds = it.movies.map { movie -> movie.id }.toSet()
+                        val uniqueIncomingMovies = result.movies.filter { movie -> movie.id !in existingIds }
+                        it.movies + uniqueIncomingMovies
+                    }
+
                     it.copy(
                         movies = nextMovies,
                         page = page,
@@ -204,6 +218,32 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
+    fun getSimilarMovies(movieId: Int) {
+        Log.d("MovieViewModel", "getSimilarMovies: $movieId")
+        _state.update { it.copy(isLoadingSuggestions = true, error = null) }
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                repository.suggestedMovies(movieId)
+            }.onSuccess { movies ->
+                _state.update {
+                    it.copy(
+                        suggestedMovies = movies,
+                        isLoadingSuggestions = false
+                    )
+                }
+            }
+            .onFailure { throwable ->
+                _state.update {
+                    it.copy(
+                        isLoadingSuggestions = false,
+                        error = throwable.message ?: "Could not load favorites"
+                    )
+                }
+            }
+        }
+    }
+
 
     fun closeMovie() {
         _state.update { it.copy(selectedMovie = null, isLoadingDetails = false) }
